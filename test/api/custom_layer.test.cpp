@@ -3,7 +3,7 @@
 #include <mbgl/gl/gl.hpp>
 #include <mbgl/map/map.hpp>
 #include <mbgl/platform/default/headless_backend.hpp>
-#include <mbgl/platform/default/headless_view.hpp>
+#include <mbgl/platform/default/offscreen_view.hpp>
 #include <mbgl/storage/default_file_source.hpp>
 #include <mbgl/style/layers/custom_layer.hpp>
 #include <mbgl/style/layers/fill_layer.hpp>
@@ -85,7 +85,7 @@ TEST(CustomLayer, Basic) {
     util::RunLoop loop;
 
     HeadlessBackend backend;
-    HeadlessView view;
+    OffscreenView view(backend.getContext());
 
 #ifdef MBGL_ASSET_ZIP
     // Regenerate with `cd test/fixtures/api/ && zip -r assets.zip assets/`
@@ -94,7 +94,7 @@ TEST(CustomLayer, Basic) {
     DefaultFileSource fileSource(":memory:", "test/fixtures/api/assets");
 #endif
 
-    Map map(backend, view, view.getPixelRatio(), fileSource, MapMode::Still);
+    Map map(backend, view.getSize(), 1, fileSource, MapMode::Still);
     map.setStyleJSON(util::read_file("test/fixtures/api/water.json"));
     map.setLatLngZoom({ 37.8, -122.5 }, 10);
     map.addLayer(std::make_unique<CustomLayer>(
@@ -114,5 +114,5 @@ TEST(CustomLayer, Basic) {
     layer->setFillColor(Color{ 1.0, 1.0, 0.0, 1.0 });
     map.addLayer(std::move(layer));
 
-    test::checkImage("test/fixtures/custom_layer/basic", test::render(map), 0.0006, 0.1);
+    test::checkImage("test/fixtures/custom_layer/basic", test::render(map, view), 0.0006, 0.1);
 }

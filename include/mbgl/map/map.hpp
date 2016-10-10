@@ -2,8 +2,6 @@
 
 #include <mbgl/util/optional.hpp>
 #include <mbgl/util/chrono.hpp>
-#include <mbgl/util/image.hpp>
-#include <mbgl/map/update.hpp>
 #include <mbgl/map/mode.hpp>
 #include <mbgl/util/geo.hpp>
 #include <mbgl/util/feature.hpp>
@@ -34,7 +32,7 @@ class Layer;
 class Map : private util::noncopyable {
 public:
     explicit Map(Backend&,
-                 View&,
+                 std::array<uint16_t, 2> size,
                  float pixelRatio,
                  FileSource&,
                  MapMode mapMode = MapMode::Continuous,
@@ -45,14 +43,11 @@ public:
 
     // Register a callback that will get called (on the render thread) when all resources have
     // been loaded and a complete render occurs.
-    using StillImageCallback = std::function<void (std::exception_ptr, PremultipliedImage&&)>;
-    void renderStill(StillImageCallback callback);
+    using StillImageCallback = std::function<void (std::exception_ptr)>;
+    void renderStill(View&, StillImageCallback callback);
 
     // Main render function.
-    void render();
-
-    // Notifies the Map that the state has changed and an update might be necessary.
-    void update(Update update);
+    void render(View&);
 
     // Styling
     void addClass(const std::string&);
@@ -136,6 +131,7 @@ public:
     ViewportMode getViewportMode() const;
 
     // Size
+    void setSize(const std::array<uint16_t, 2>&);
     uint16_t getWidth() const;
     uint16_t getHeight() const;
 

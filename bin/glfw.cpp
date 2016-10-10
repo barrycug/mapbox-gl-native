@@ -116,7 +116,9 @@ int main(int argc, char *argv[]) {
         fileSource.setAccessToken(std::string(token));
     }
 
-    mbgl::Map map(backend, backend, backend.getPixelRatio(), fileSource);
+    mbgl::Map map(backend, view->getSize(), view->getPixelRatio(), fileSource);
+
+    backend.setMap(&map);
 
     // Load settings
     mbgl::Settings_JSON settings;

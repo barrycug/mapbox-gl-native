@@ -1,6 +1,6 @@
 #include <mbgl/map/map.hpp>
 #include <mbgl/platform/default/headless_backend.hpp>
-#include <mbgl/platform/default/headless_view.hpp>
+#include <mbgl/platform/default/offscreen_view.hpp>
 #include <mbgl/sprite/sprite_image.hpp>
 #include <mbgl/test/stub_file_source.hpp>
 #include <mbgl/test/util.hpp>
@@ -21,14 +21,14 @@ public:
         map.setStyleJSON(util::read_file("test/fixtures/api/query_style.json"));
         map.addImage("test-icon", std::move(image));
 
-        test::render(map);
+        test::render(map, view);
     }
 
     util::RunLoop loop;
     HeadlessBackend backend;
-    HeadlessView view;
+    OffscreenView view { backend.getContext() };
     StubFileSource fileSource;
-    Map map { backend, view, view.getPixelRatio(), fileSource, MapMode::Still };
+    Map map { backend, view.getSize(), 1, fileSource, MapMode::Still };
 };
 
 } // end namespace

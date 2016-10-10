@@ -3,7 +3,7 @@
 #include <mbgl/benchmark/util.hpp>
 #include <mbgl/map/map.hpp>
 #include <mbgl/platform/default/headless_backend.hpp>
-#include <mbgl/platform/default/headless_view.hpp>
+#include <mbgl/platform/default/offscreen_view.hpp>
 #include <mbgl/sprite/sprite_image.hpp>
 #include <mbgl/storage/default_file_source.hpp>
 #include <mbgl/storage/network_status.hpp>
@@ -28,16 +28,14 @@ public:
         auto image = std::make_unique<SpriteImage>(std::move(decoded), 1.0);
         map.addImage("test-icon", std::move(image));
 
-        view.resize(1000, 1000);
-
-        mbgl::benchmark::render(map);
+        mbgl::benchmark::render(map, view);
     }
 
     util::RunLoop loop;
     HeadlessBackend backend;
-    HeadlessView view;
+    OffscreenView view{ backend.getContext(), {{ 1000, 1000 }} };
     DefaultFileSource fileSource{ "benchmark/fixtures/api/cache.db", "." };
-    Map map{ backend, view, view.getPixelRatio(), fileSource, MapMode::Still };
+    Map map{ backend, view.getSize(), 1, fileSource, MapMode::Still };
     ScreenBox box{{ 0, 0 }, { 1000, 1000 }};
 };
 
