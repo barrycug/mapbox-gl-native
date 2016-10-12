@@ -1316,7 +1316,7 @@ public class MapView extends FrameLayout {
             return;
         }
         nativeMapView.cancelTransitions();
-        nativeMapView.jumpTo(Math.toRadians(-bearing), center, Math.toRadians(pitch), zoom);
+        nativeMapView.jumpTo(bearing, center, pitch, zoom);
     }
 
     void easeTo(double bearing, LatLng center, long duration, double pitch, double zoom, boolean easingInterpolator, @Nullable final MapboxMap.CancelableCallback cancelableCallback) {
@@ -1340,7 +1340,7 @@ public class MapView extends FrameLayout {
             });
         }
 
-        nativeMapView.easeTo(Math.toRadians(-bearing), center, duration, Math.toRadians(pitch), zoom, easingInterpolator);
+        nativeMapView.easeTo(bearing, center, duration, pitch, zoom, easingInterpolator);
     }
 
     void flyTo(double bearing, LatLng center, long duration, double pitch, double zoom, @Nullable final MapboxMap.CancelableCallback cancelableCallback) {
@@ -1364,7 +1364,7 @@ public class MapView extends FrameLayout {
             });
         }
 
-        nativeMapView.flyTo(Math.toRadians(-bearing), center, duration, Math.toRadians(pitch), zoom);
+        nativeMapView.flyTo(bearing, center, duration, pitch, zoom);
     }
 
     private void adjustTopOffsetPixels() {
